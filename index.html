@@ -4,10 +4,10 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>reveal.js - The HTML Presentation Framework</title>
+		<title>Creating a To-do List With PhoneGap</title>
 
-		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
-		<meta name="author" content="Hakim El Hattab">
+		<meta name="description" content="PhoneGap Tutorial - Todo List">
+		<meta name="author" content="Toh Jian Feng">
 
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -35,21 +35,248 @@
 	</head>
 
 	<body>
-
 		<div class="reveal">
-
-			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
+				<!-- Title Slide -->
 				<section>
-					<h1>Reveal.js</h1>
-					<h3>The HTML Presentation Framework</h3>
-					<p>
-						<small>Created by <a href="http://hakim.se">Hakim El Hattab</a> / <a href="http://twitter.com/hakimel">@hakimel</a></small>
-					</p>
+					<h1>Creating a To-Do App with PhoneGap</h1>
+					<small>Created by Toh Jian Feng</small>
 				</section>
 
+				<!-- Git Clone Skeleton Code -->
+				<section>
+					<p>Clone the skeleton code to your computer.</p>
+					<pre><code>git clone https://github.com/jftoh/pg-todo-skeleton</code></pre>
+				</section>
+
+				<!-- Explore the Skeleton Code -->
+				<section>
+					<p>Explore the skeleton code.</p>
+				</section>
+
+				<section>
+					<h2>What we want to create</h2>
+					<img data-src="images/todo-list-final.png">
+				</section>
+
+				<!-- Dealing with index.html-->
+				<section>
+					<section>
+						<p>Let's start with our backbone.</p>
+						<p class="fragment">Open up <strong><em>index.html</em></strong>.</p>
+					</section>
+
+					<section>
+						<p>Add a header to the body.</p>
+						<div class="fragment">
+							<p>This will be our app header.</p>
+							<pre><code class="html">&lt;h1&gt;To-do List&lt;/h1&gt;</code></pre>
+						</div>
+					</section>
 
 
+					<section>
+						<p>Insert a div block to represent the "create a task" section.</p>
+						<p>Add an input field and a button to this section.</p>
+						<pre><code class="html">&lt;div id="createNewTask"&gt;
+    &lt;input type="text" id="newTaskInput" placeHolder="New Task"&gt;
+    &lt;button id="addNewTask"&gt;Add New Task...&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+					</section>
+
+					<section>
+						<p>We also need to add an unordered list to represent a list of tasks.</p>
+						<pre><code class="html"> &lt;ul id="taskList"&gt;&lt;/ul&gt;</code></pre>	
+					</section>
+
+					<section>
+						<p>Test your app with the PhoneGap Developer App.</p>
+					</section>
+				</section>
+
+				<!-- Dealing with index.css -->
+				<section>
+					<section>
+						<p>Time to style your app.</p>
+						<p class="fragment">Open up <strong><em>index.css</em></strong>.</p>
+					</section>
+
+					<section>
+						<p>Let's set some general rules.</p>
+						<pre><code class="css">body {
+    font-family: Verdana, Arial;
+    font-size: 18px;
+    background-color: #FFFFFF;
+}
+
+h1 {
+    background-color: #626b5e;
+    font-size: 2em;
+    color: #F5F6F5;
+    line-height: 2em;
+    text-align: center;
+}
+</code></pre>
+
+					</section>
+
+					<section>
+						
+						<p>Input field</p>
+						<pre><code>#newTaskInput, #addNewTask {
+	display: block;
+	width: 98%;
+	margin-top: 5px;
+	margin-right: auto;
+	margin-left: auto;
+	background-color: #757769;
+	border: 0;
+	height: 2em;
+	font-size: 1em;
+	color: #F5F6F5;
+}</code></pre>
+						
+					</section>
+
+					<section>
+						<p>Each task in the task list</p>
+						<pre><code>#taskList {
+	margin-top: 10px;
+}
+
+#taskList > li {
+	background: -webkit-linear-gradient(#FFF, #F6F6F7);
+	background: -o-linear-gradient(#FFF, #F6F6F7);
+	background: -moz-linear-gradient(#FFF, #F6F6F7);
+	background: linear-gradient(#FFF, #F6F6F7);
+	border: 1px solid #BBB6AF;
+	line-height: 3em;
+	color: #929292;
+	margin-top: 2px;
+	font-size: 21px;
+	font-family: Arial;
+}
+
+#taskList span {
+	margin-left: 5px;
+}</code></pre>
+					</section>
+
+					<section>
+						<p>Finally, distinguishing between active and done tasks</p>
+						<pre><code>.done {
+	text-decoration: line-through;
+	opacity: 0.5;
+}</code></pre>
+					</section>
+				</section>
+
+				<!-- Dealing with index.js -->
+				<section>
+					<section>
+						<p>Let's bring the app to life with JavaScript.</p>
+						<p class="fragment">Open <strong><em>index.js</em></strong>.</p>
+					</section>
+
+					<section>
+						<p>Add the variables associated with the app components.</p>
+						<pre><code>    var $newTaskInput = $('#newTaskInput');
+    var $taskList = $('#taskList');</code></pre>
+					</section>
+
+					<section>
+						<p>We're going to make the button add a new task every time it is pressed on.</p>
+						<pre><code> $('#addNewTask').on('click', function() {
+        var key = Date.now();
+        var newTask = '<li data-key="' + key + '"><span>' + $newTaskInput.val() + '</span></li>';
+      
+        $newTaskInput.val('');
+ });</code></pre>
+					</section>
+
+					<section>
+						<p>Toggling the status of a task by tapping</p>
+						<pre><code>    $('li').on('tap', function() {
+        var $this = $(this);
+
+        if ($this.hasClass('done')) {
+            $this.removeClass('done');
+        } else {
+            $this.addClass('done');
+        }
+    });</code></pre>
+					</section>
+
+					<section>
+						<p>Tap and hold to delete tasks</p>
+						<pre><code>$('li').on('taphold', function() {
+    var $this= $(this);
+
+    $this.remove();
+});</code></pre>	
+					</section>
+
+					<section>
+						<p>Storing tasks into phone memory</p>
+						<div class="fragment">
+							<p>Add an array before the document.ready function:</p>
+							<pre><code>var taskList = new Array();</code></pre>
+						</div>
+					</section>
+
+					<section>
+						<p>Loading stored tasks from phone memory</p>
+						<p>Add this block of code after the component variables:</p>
+						<pre><code>    if (window.localStorage) {
+        taskList = JSON.parse(window.localStorage.getItem('taskList'));
+    }
+
+    if (null != taskList) {
+        for (i = 0; i < taskList.length; i++) {
+            var newTask = '<li data-key="' + taskList[i].key + '"><span>' + taskList[i].task + '</span></li>';
+            $taskList.append(newTask);
+        }
+    } else {
+        taskList = new Array();
+    }</code></pre>
+					</section>
+
+					<section>
+						<p>Updating the array on every task added...</p>
+						<p>Add this block of code in the onClick function:</p>
+						<pre><code>        $taskList.append(newTask);
+        taskList.push({key:key, task:$newTaskInput.val(), done: false});
+        if (window.localStorage) {
+            window.localStorage.setItem('taskList', JSON.stringify(taskList));
+        }</code></pre>
+					</section>
+
+					<section>
+						<p>and updating the array on every task deleted.</p>
+						<pre><code>        if (window.localStorage) {
+            window.localStorage.setItem('taskList', JSON.stringify(taskList));
+        }    </code></pre>
+					</section>
+				</section>
+
+				<section>
+					<p>That's all you need for this app.</p>
+					<p class="fragment">Play around with it to explore more of HTML/CSS/JavaScript.</p>
+				</section>
+
+				<section>
+					<h2>The End</h2>
+					<small class="fragment">(finally)</small>
+				</section>
+
+				<section>
+					<h2>Slide deck links:</h2>
+					<ul>
+						<li><a href="https://jftoh.github.io/phonegap-intro">Introduction to PhoneGap</a></li>
+						<li><a href="https://jftoh.github.io/phonegap-tutorial">Setting up your computer for PhoneGap Development</a></li>
+						<li><a href="https://jftoh.github.io/phonegap-todo-tutorial">Messing around with PhoneGap</a></li>
+					</ul>
+				</section>
 			</div>
 
 		</div>
